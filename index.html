@@ -14,8 +14,7 @@
             <p>Please enter your account details</p>
         </div>
 
-        <!-- The action attribute will point to our PHP backend script later -->
-        <form action="https://secure-portal-backend-xxxx.onrender.com/login" method="POST" class="login-form">            
+        <form id="loginForm" class="login-form">            
             <div class="input-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" placeholder="Enter your username" required autocomplete="username">
@@ -30,5 +29,37 @@
         </form>
     </div>
 
+    <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault(); // Prevents the page from redirecting away from GitHub Pages
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // CRITICAL: Replace this xxxx URL with your actual live Render Web Service URL
+        const renderBackendUrl = 'https://secure-portal-backend-xxxx.onrender.com/login'; 
+
+        try {
+            const response = await fetch(renderBackendUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+            
+            if (response.ok) {
+                alert('Success! ' + data.message);
+            } else {
+                alert('Server returned an error status: ' + response.status);
+            }
+        } catch (error) {
+            console.error('Connection failed:', error);
+            alert('Could not connect to the backend. Note: If your Render web service is on the free tier, it spins down after 15 minutes of inactivity. Please give it about 1 minute to wake up and try again!');
+        }
+    });
+    </script>
 </body>
 </html>
